@@ -1,7 +1,3 @@
-Here's your corrected and improved **README**:  
-
----
-
 # 🚀 QueryMate: SQL Query Assistant  
 
 QueryMate is an interactive **text-to-SQL chatbot** that converts natural language queries into **SQL commands** and executes them on an **SQLite database**. Built with Python, it leverages the **Groq API** for natural language processing, making database querying easy and intuitive.  
