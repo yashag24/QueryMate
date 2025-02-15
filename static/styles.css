@@ -1,0 +1,269 @@
+:root {
+    --primary-color: #3a7ca5; /* Deep Ocean Blue */
+    --hover-color: #2f6a8c; /* Muted Teal */
+    --accent-color: #f28b82; /* Soft Coral Pink */
+    --warning-color: #fbbc04; /* Warm Golden Yellow */
+    --background: #e8f0f7; /* Light Sky Blue */
+  
+    --text-color: #2d3e50; /* Dark Blue-Gray */
+    --light-gray: #dae2eb; /* Soft Cool Gray */
+    --medium-gray: #c8d3e0; /* Muted Cloud Blue */
+    --section-bg: #e3eef7; /* Pale Blue */
+    --alternate-row: rgba(58, 124, 165, 0.1); /* Ocean Blue Tint */
+    --border-radius: 14px;
+    --transition: all 0.2s ease-in-out;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+h1 span {
+    font-size: 1.2rem; /* Smaller size for the span */
+    font-weight: normal;
+    display: block;
+ 
+    opacity: 0.9; /* Slightly faded for a subtle effect */
+}
+h4 {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: center;
+    opacity: 0.9;
+    
+}
+
+
+
+/* Base Styles */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--background);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(229, 235, 240, 0.5); /* Updated border color */
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+h1::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 4px;
+    background: var(--primary-color);
+    margin: 8px auto 0;
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+}
+h1:hover::after {
+    width: 80%;
+}
+/* Form Elements */
+form, .query-section {
+    margin-bottom: 2rem;
+    display: grid;
+    gap: 1rem;
+}
+
+/* Use a distinct background for query section */
+.query-section {
+    background: var(--section-bg);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+}
+
+label {
+    font-weight: 500;
+    color: #475569;
+    font-size: 0.875rem;
+}
+
+input {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); /* Updated shadow color */
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--border-radius);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--primary-color);
+    color: white;
+    transition: var(--transition);
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn:hover {
+    background: var(--hover-color);
+    transform: translateY(-1px);
+}
+
+/* File Upload Customization */
+.custom-file-upload {
+    color: black;
+    width: 94%;
+    max-width: 100%;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-gray);
+    border: 2px dashed var(--medium-gray);
+}
+
+.custom-file-upload:hover {
+    border-color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.05); /* Updated background color */
+    color: var(--primary-color);
+}
+
+/* Hide Default File Input */
+input[type="file"] {
+    display: none;
+}
+
+/* Query Display */
+#queryDisplay {
+    margin: 2rem 0;
+    background: var(--light-gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+#executedQuery {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    border: 1px solid var(--medium-gray);
+}
+
+/* Table Wrapper for Horizontal Scrolling */
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    background: white;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+}
+
+/* Table Header */
+th {
+    background: var(--primary-color);
+    color: white;
+    text-align: left;
+    padding: 10px;
+}
+
+/* Table Rows */
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Alternate Row Coloring using accent tint */
+tbody tr:nth-child(even) {
+    background: var(--alternate-row);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .container {
+        padding: 1.5rem;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    input, .btn {
+        padding: 0.75rem 1rem;
+    }
+
+    #executedQuery {
+        font-size: 0.8rem;
+    }
+}
+
+/* Query Table Styling */
+.query-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+}
+
+/* Table Header */
+.query-table th {
+    background: var(--primary-color);
+    color: white;
+    text-align: left;
+    padding: 10px;
+    white-space: nowrap;
+}
+
+/* Table Rows */
+.query-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+/* Responsive Scrolling */
+#queryResults {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+}

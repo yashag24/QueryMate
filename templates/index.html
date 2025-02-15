@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QueryMate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>QueryMate:<br/><span>SQL Query Assistant</span> </h1>
+     
+
+        <h4>Upload a .sql or .db file:-</h4>
+        
+        <!-- File Upload Section -->
+        <form id="uploadForm">
+            <label for="fileInput" class="custom-file-upload btn">
+                <span class="icon">📁</span> Choose File
+            </label>
+            <input type="file" id="fileInput" name="file" required onchange="displayFileName()">
+            <p id="fileNameDisplay">No file chosen</p>
+            <button type="submit" class="btn">Upload</button>
+            <p id="uploadStatus"></p>
+        </form>
+
+        <!-- Query Input Section -->
+        <div class="query-section">
+            <label for="queryInput">Enter SQL Query:</label>
+            <input type="text" id="queryInput" placeholder="E.g., Show all users">
+            <button onclick="sendQuery()" class="btn">Run Query</button>
+        </div>
+
+        <!-- Query Display -->
+        <div id="queryDisplay">
+            <h3>Executed Query:</h3>
+            <pre id="executedQuery"></pre>
+        </div>
+
+        <!-- Query Results -->
+        <div id="queryResults">
+            <h3>Query Results:</h3>
+        </div>
+    </div>
+
+    <script>
+        function displayFileName() {
+            const fileInput = document.getElementById("fileInput");
+            const fileNameDisplay = document.getElementById("fileNameDisplay");
+            fileNameDisplay.textContent = fileInput.files.length > 0 ? `Selected: ${fileInput.files[0].name}` : "No file chosen";
+        }
+
+        document.getElementById("uploadForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById("fileInput");
+
+            if (fileInput.files.length === 0) {
+                alert("Please choose a file before uploading.");
+                return;
+            }
+
+            formData.append("file", fileInput.files[0]);
+
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            document.getElementById("uploadStatus").innerText = result.message || result.error;
+        });
+
+        async function sendQuery() {
+            const userInput = document.getElementById("queryInput").value;
+            if (!userInput) {
+                alert("Please enter a query.");
+                return;
+            }
+
+            document.getElementById("queryResults").innerHTML = "<h3>Query Results:</h3>";
+
+            const response = await fetch("/query", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query: userInput })
+            });
+
+            const result = await response.json();
+            document.getElementById("executedQuery").textContent = result.query;
+
+            if (result.error) {
+                document.getElementById("queryResults").innerHTML += `<p style='color:red;'>Error: ${result.error}</p>`;
+            } else {
+                document.getElementById("queryResults").innerHTML += result.results;
+            }
+        }
+    </script>
+</body>
+</html>
