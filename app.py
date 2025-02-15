@@ -11,7 +11,7 @@ from groq import Groq
 load_dotenv()
 
 # Initialize Flask app
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__, static_folder="static", template_folder="templates")
 app.config["UPLOAD_FOLDER"] = "uploads"
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
@@ -30,14 +30,9 @@ def convert_sql_to_db(sql_file, db_file):
     with open(sql_file, "r", encoding="utf-8") as file:
         sql_script = file.read()
 
-    # Remove MySQL-specific KEY definitions inside CREATE TABLE
     sql_script = re.sub(r",\s*KEY .*?\(.*?\)", "", sql_script, flags=re.IGNORECASE)
-    
-    # Remove CREATE DATABASE and USE statements (not needed in SQLite)
     sql_script = re.sub(r"CREATE DATABASE .*?;", "", sql_script, flags=re.IGNORECASE)
     sql_script = re.sub(r"USE .*?;", "", sql_script, flags=re.IGNORECASE)
-
-    # Convert AUTO_INCREMENT to AUTOINCREMENT (SQLite syntax)
     sql_script = re.sub(r"AUTO_INCREMENT", "AUTOINCREMENT", sql_script, flags=re.IGNORECASE)
 
     try:
@@ -91,13 +86,25 @@ def get_table_info():
         table_name = table[0]
         cursor.execute(f"PRAGMA table_info({table_name});")
         columns = cursor.fetchall()
-        table_info[table_name] = [(col[1], col[2]) for col in columns]  # (Column Name, Data Type)
+        table_info[table_name] = [(col[1], col[2]) for col in columns]
     return table_info
 
-# Serve frontend (index.html)
-@app.route("/")
-def serve_frontend():
-    return send_from_directory("static", "index.html")
+@app.route("/", methods=["GET"])
+def home():
+    """Renders the homepage."""
+    index_path = os.path.abspath("templates/index.html")
+    if not os.path.exists(index_path):
+        return jsonify({"error": "index.html is missing"}), 500
+    return render_template("index.html")
+
+@app.route("/test")
+def test():
+    return "Flask is working!"
+
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    """Serve static files (CSS, JS)."""
+    return send_from_directory("static", filename)
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
@@ -115,10 +122,9 @@ def upload_file():
     file.save(file_path)
 
     if filename.endswith(".sql"):
-        # Convert SQL to DB
         new_db = file_path.replace(".sql", ".db")
         response = convert_sql_to_db(file_path, new_db)
-        os.remove(file_path)  # ✅ Delete the original SQL file after conversion
+        os.remove(file_path)
         if "error" in response:
             return jsonify(response), 400
         current_db = new_db
@@ -131,7 +137,6 @@ def upload_file():
 
 @app.route("/query", methods=["POST"])
 def query():
-    """Handles user SQL queries via Groq."""
     user_input = request.json.get("query")
     if not user_input:
         return jsonify({"error": "No query provided"}), 400
@@ -170,4 +175,4 @@ def query():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
