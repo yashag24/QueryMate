@@ -86,9 +86,7 @@ Bot: SELECT COUNT(*) FROM tracks WHERE genre = 'Rock';
 Result: 200
 ```
 
-To exit, type `exit`.
 
----
 
 🚀 **QueryMate** — Making SQL Queries Effortless! 🎯
 
