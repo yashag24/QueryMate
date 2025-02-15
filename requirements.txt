@@ -3,4 +3,3 @@ flask-cors
 jinja2
 python-dotenv
 requests
-sqlite3
