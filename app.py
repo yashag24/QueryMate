@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, g
+from flask import Flask, render_template, request, jsonify, g, send_from_directory
 import sqlite3
 import json
 import os
@@ -11,7 +11,7 @@ from groq import Groq
 load_dotenv()
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 app.config["UPLOAD_FOLDER"] = "uploads"
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
@@ -94,10 +94,10 @@ def get_table_info():
         table_info[table_name] = [(col[1], col[2]) for col in columns]  # (Column Name, Data Type)
     return table_info
 
-@app.route("/", methods=["GET"])
-def home():
-    """Renders the homepage."""
-    return render_template("index.html")
+# Serve frontend (index.html)
+@app.route("/")
+def serve_frontend():
+    return send_from_directory("static", "index.html")
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
@@ -128,8 +128,10 @@ def upload_file():
         return jsonify({"error": "Invalid file format. Upload .sql or .db"}), 400
 
     return jsonify({"message": f"Database set to {current_db}"}), 200
+
 @app.route("/query", methods=["POST"])
 def query():
+    """Handles user SQL queries via Groq."""
     user_input = request.json.get("query")
     if not user_input:
         return jsonify({"error": "No query provided"}), 400
@@ -166,5 +168,6 @@ def query():
         return jsonify({"query": sql_query, "results": formatted_output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
